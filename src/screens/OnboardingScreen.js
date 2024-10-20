@@ -1,53 +1,65 @@
 import { View, Text, StyleSheet, Dimensions } from "react-native";
-import React, { useEffect, useRef } from "react";
-
-const { width, height } = Dimensions.get("window");
-
-//Onboarding
+import React, { useRef, useEffect } from "react";
 import Onboarding from "react-native-onboarding-swiper";
-
-//Lottie
 import Lottie from "lottie-react-native";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
+import { setItem } from "../utils/asyncStorage";
+
+const { width } = Dimensions.get("window");
 
 export default function OnboardingScreen() {
   const navigation = useNavigation();
-  const animationRef = useRef(null);
 
-  useEffect(() => {
-    animationRef.current?.play();
-  }, []);
+  // Animasyon referanslarını bir dizi içinde saklıyoruz
+  const animationRefs = [useRef(null), useRef(null), useRef(null)];
 
   const handleDone = () => {
     navigation.navigate("Home");
+    setItem("onboarded", "1");
   };
 
-  const doneButton = ({ ...props }) => {
-    return (
-      <TouchableOpacity style={styles.doneButton} {...props}>
-        <Text>Done</Text>
-      </TouchableOpacity>
-    );
+  const doneButton = ({ ...props }) => (
+    <TouchableOpacity style={styles.doneButton} {...props}>
+      <Text>Done</Text>
+    </TouchableOpacity>
+  );
+
+  // Her sayfa değiştiğinde o sayfanın animasyonunu başlatıyoruz
+  const handlePageChange = (index) => {
+    animationRefs.forEach((ref, i) => {
+      if (i === index) {
+        ref.current?.play(); // Aktif sayfanın animasyonunu çalıştır
+      } else {
+        ref.current?.reset(); // Diğer animasyonları durdur ve sıfırla
+      }
+    });
   };
+
+  // İlk sayfanın animasyonunu otomatik başlat
+  useEffect(() => {
+    animationRefs[0]?.current?.play();
+  }, []);
+
   return (
     <View style={styles.container}>
       <Onboarding
         onDone={handleDone}
         onSkip={handleDone}
         DoneButtonComponent={doneButton}
-        // bottomBarHighlight={false}
         containerStyles={{ paddingHorizontal: 15 }}
+        onPageChange={handlePageChange} // Sayfa değişiminde tetikleniyor
         pages={[
           {
             backgroundColor: "#a7f3d0",
             image: (
               <View style={styles.lottie}>
                 <Lottie
-                  ref={animationRef}
+                  ref={animationRefs[0]}
                   source={require("../assets/animation/animation.json")}
-                  loop
                   style={styles.lottie}
+                  autoPlay={true} // Otomatik oynatma
+                  loop={true} // Döngü
                 />
               </View>
             ),
@@ -58,9 +70,10 @@ export default function OnboardingScreen() {
             backgroundColor: "#fef3c7",
             image: (
               <Lottie
-                ref={animationRef}
+                ref={animationRefs[1]}
                 source={require("../assets/animation/achieve.json")}
-                loop
+                autoPlay={true} // Otomatik oynatma
+                loop={true} // Döngü
                 style={styles.lottie}
               />
             ),
@@ -72,9 +85,10 @@ export default function OnboardingScreen() {
             backgroundColor: "#a78bfa",
             image: (
               <Lottie
-                ref={animationRef}
+                ref={animationRefs[2]}
                 source={require("../assets/animation/work.json")}
-                loop
+                autoPlay={true} // Otomatik oynatma
+                loop={true} // Döngü
                 style={styles.lottie}
               />
             ),
@@ -98,8 +112,5 @@ const styles = StyleSheet.create({
   },
   doneButton: {
     padding: 20,
-    // backgroundColor: "white",
-    // borderBottomLeftRadius: "100%",
-    // borderTopLeftRadius: "100%",
   },
 });

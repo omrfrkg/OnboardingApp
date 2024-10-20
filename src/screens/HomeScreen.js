@@ -9,11 +9,19 @@ import {
 import React, { useEffect, useRef } from "react";
 
 import Lottie from "lottie-react-native";
+import { useNavigation } from "@react-navigation/native";
+import { removeItem } from "../utils/asyncStorage";
 
 const { width, height } = Dimensions.get("window");
 
 export default function HomeScreen() {
+  const navigation = useNavigation();
   const animationRef = useRef(null);
+
+  const handleReset = async () => {
+    await removeItem("onboarded");
+    navigation.push("Onboarding");
+  };
 
   useEffect(() => {
     animationRef.current?.play();
@@ -29,7 +37,7 @@ export default function HomeScreen() {
         />
       </View>
       <Text style={styles.text}>Home Page</Text>
-      <TouchableOpacity style={styles.resetButton}>
+      <TouchableOpacity onPress={handleReset} style={styles.resetButton}>
         <Text>Reset</Text>
       </TouchableOpacity>
     </SafeAreaView>
