@@ -1,9 +1,17 @@
 import { View, Text, StyleSheet, Dimensions } from "react-native";
-import React, { useRef, useEffect } from "react";
-import Onboarding from "react-native-onboarding-swiper";
-import Lottie from "lottie-react-native";
-import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
+import React, { useRef, useEffect } from "react";
+
+//Onboarding
+import Onboarding from "react-native-onboarding-swiper";
+
+//Lottie
+import Lottie from "lottie-react-native";
+
+//Nav
+import { useNavigation } from "@react-navigation/native";
+
+//Utils
 import { setItem } from "../utils/asyncStorage";
 
 const { width } = Dimensions.get("window");

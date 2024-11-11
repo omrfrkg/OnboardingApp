@@ -8,8 +8,13 @@ import {
 } from "react-native";
 import React, { useEffect, useRef } from "react";
 
+//Lottie
 import Lottie from "lottie-react-native";
+
+//Nav
 import { useNavigation } from "@react-navigation/native";
+
+//Utils
 import { removeItem } from "../utils/asyncStorage";
 
 const { width, height } = Dimensions.get("window");
